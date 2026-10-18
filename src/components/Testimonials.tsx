@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Quote, Star, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
+import { Quote, Star, ChevronLeft, ChevronRight, MessageSquare, Sparkles } from 'lucide-react';
 import { testimonials } from '../data';
 import CardTilt from './CardTilt';
 
@@ -63,19 +63,22 @@ export default function Testimonials() {
                   <Quote size={180} className="transform rotate-180" />
                 </div>
 
-                {/* Avatar frame column */}
+                {/* Client Initials Badge Column (no random people photos) */}
                 <div className="relative shrink-0">
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-violet-500 to-cyan-400 opacity-20 blur-md" />
-                  <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full p-[2px] bg-gradient-to-tr from-violet-500 via-indigo-500 to-cyan-400 relative z-10">
-                    <img
-                      src={activeTestimonial.avatar}
-                      alt={activeTestimonial.name}
-                      referrerPolicy="no-referrer"
-                      className="h-full w-full rounded-full object-cover border border-[#09090B]"
-                    />
+                  <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-500 p-[2px] shadow-lg shadow-violet-500/20 relative z-10">
+                    <div className="h-full w-full rounded-[14px] bg-[#0E0E17] flex items-center justify-center border border-white/10">
+                      <span className="font-sans font-black text-xl sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400 tracking-wider">
+                        {activeTestimonial.name
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')
+                          .substring(0, 2)
+                          .toUpperCase()}
+                      </span>
+                    </div>
                   </div>
-                  {/* Small floating quote node */}
-                  <div className="absolute -bottom-1 -right-1 z-20 rounded-full border border-white/10 bg-[#0E0E14] p-2 text-cyan-400 shadow-md">
+                  {/* Floating quote node */}
+                  <div className="absolute -bottom-1.5 -right-1.5 z-20 rounded-full border border-white/10 bg-[#0E0E14] p-2 text-cyan-400 shadow-md">
                     <MessageSquare size={12} />
                   </div>
                 </div>
@@ -95,13 +98,35 @@ export default function Testimonials() {
                   </blockquote>
 
                   {/* Client Identification details */}
-                  <div className="space-y-0.5">
-                    <cite className="not-italic text-sm font-sans font-black text-white block">
-                      {activeTestimonial.name}
-                    </cite>
-                    <span className="text-xs font-mono text-zinc-500 font-bold tracking-wider uppercase">
-                      {activeTestimonial.role}, {activeTestimonial.company}
-                    </span>
+                  <div className="space-y-3">
+                    <div className="space-y-0.5">
+                      <cite className="not-italic text-sm font-sans font-black text-white block">
+                        {activeTestimonial.name}
+                      </cite>
+                      <span className="text-xs font-mono text-zinc-500 font-bold tracking-wider uppercase">
+                        {activeTestimonial.role}, {activeTestimonial.company}
+                      </span>
+                    </div>
+
+                    {/* Top 3 Words Chips */}
+                    {activeTestimonial.topWords && activeTestimonial.topWords.length > 0 && (
+                      <div className="flex flex-wrap gap-2 items-center pt-1">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold tracking-wider text-violet-400 uppercase">
+                          <Sparkles size={11} />
+                          Top Words
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activeTestimonial.topWords.map((word, idx) => (
+                            <span
+                              key={idx}
+                              className="rounded-full border border-violet-500/20 bg-violet-500/10 px-2.5 py-1 text-[10px] font-mono font-semibold text-violet-300 backdrop-blur-sm"
+                            >
+                              {word}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardTilt>

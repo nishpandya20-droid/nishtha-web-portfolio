@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
-import { ArrowUp, Menu, X, Layers, Sparkles, MessageSquare, Award } from 'lucide-react';
+import { ArrowUp, Menu, X, Layers, Sparkles, MessageSquare, Award, FileText } from 'lucide-react';
 
 import CustomCursor from './components/CustomCursor';
 import Loader from './components/Loader';
@@ -33,7 +33,8 @@ const NAV_ITEMS = [
   { label: 'Timeline', id: 'experience-section' },
   { label: 'Credentials', id: 'certifications-section' },
   { label: 'Reviews', id: 'testimonials-section' },
-  { label: 'Contact', id: 'contact-section' }
+  { label: 'Contact', id: 'contact-section' },
+  { label: 'Resume', id: 'resume-section' }
 ];
 
 export default function App() {
@@ -51,6 +52,20 @@ export default function App() {
     damping: 30,
     restDelta: 0.001
   });
+
+  // Prevent body scroll when modal or mobile drawer is open
+  useEffect(() => {
+    const shouldLock = selectedProject !== null || mobileMenuOpen;
+    const original = document.body.style.overflow;
+    if (shouldLock) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [selectedProject, mobileMenuOpen]);
 
   // Handle active section on scroll
   useEffect(() => {
@@ -160,10 +175,17 @@ export default function App() {
             </nav>
 
             {/* Desktop Consult Call CTA */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-2.5">
+              <button
+                onClick={() => handleNavigate('resume-section')}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2 text-xs font-bold text-cyan-300 hover:text-white hover:border-cyan-400/40 hover:bg-white/[0.08] transition-all cursor-pointer shadow-md"
+              >
+                <FileText size={13} className="text-cyan-400" />
+                View Resume
+              </button>
               <button
                 onClick={() => handleNavigate('contact-section')}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4.5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-500/10 hover:shadow-indigo-500/25 hover:brightness-110 active:scale-98 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-indigo-500/10 hover:shadow-indigo-500/25 hover:brightness-110 active:scale-98 transition-all cursor-pointer"
               >
                 <MessageSquare size={13} />
                 Consult Design
@@ -218,13 +240,22 @@ export default function App() {
                 </div>
 
                 {/* Drawer Footer Call */}
-                <button
-                  onClick={() => handleNavigate('contact-section')}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/10 cursor-pointer"
-                >
-                  <MessageSquare size={14} />
-                  Consult Design
-                </button>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => handleNavigate('resume-section')}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-xs font-bold text-cyan-300 shadow-md cursor-pointer"
+                  >
+                    <FileText size={14} className="text-cyan-400" />
+                    View Resume
+                  </button>
+                  <button
+                    onClick={() => handleNavigate('contact-section')}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-indigo-500/10 cursor-pointer"
+                  >
+                    <MessageSquare size={14} />
+                    Consult Design
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -258,25 +289,28 @@ export default function App() {
             {/* Client Testimonials slider */}
             <Testimonials />
 
-            {/* Modern Interactive Resume Sheet section */}
+            {/* Dynamic Contact Gateway form */}
+            <Contact />
+
+            {/* Modern Interactive Resume Sheet section - FINAL SECTION */}
             <section id="resume-section" className="relative py-20 sm:py-28 bg-[#09090B] border-t border-white/5">
               <div className="container mx-auto px-6 relative z-10 max-w-7xl text-center">
                 <div className="flex flex-col gap-2 mb-12 sm:mb-16 items-center">
                   <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-widest text-violet-400 uppercase">
                     <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
-                    10 / QUALIFICATION CERTIFICATE
+                    10 / OFFICIAL RESUME
                   </div>
                   <h2 className="text-3xl sm:text-4.5xl font-sans font-extrabold text-white tracking-tight leading-none">
-                    Curriculum <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Vitae</span>
+                    My <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Resume</span>
                   </h2>
+                  <p className="text-sm text-zinc-400 max-w-lg text-center mt-1">
+                    Click to explore in full-page form or download the official curriculum vitae.
+                  </p>
                 </div>
 
                 <ResumePreview />
               </div>
             </section>
-
-            {/* Dynamic Contact Gateway form */}
-            <Contact />
           </main>
 
           {/* Minimal Premium Footer */}

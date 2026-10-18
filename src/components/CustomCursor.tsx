@@ -68,7 +68,7 @@ export default function CustomCursor() {
       {/* Glow aura */}
       <motion.div
         id="custom-cursor-glow"
-        className="pointer-events-none fixed top-0 left-0 z-40 h-[250px] w-[250px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-[#7C3AED]/10 via-[#06B6D4]/10 to-[#A855F7]/10 blur-[60px]"
+        className="pointer-events-none fixed top-0 left-0 z-[160] h-[250px] w-[250px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-[#7C3AED]/10 via-[#06B6D4]/10 to-[#A855F7]/10 blur-[60px]"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -78,7 +78,7 @@ export default function CustomCursor() {
       {/* Main Cursor Dot */}
       <motion.div
         id="custom-cursor-dot"
-        className="pointer-events-none fixed top-0 left-0 z-50 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400 mix-blend-screen"
+        className="pointer-events-none fixed top-0 left-0 z-[180] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400 mix-blend-screen"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -93,7 +93,7 @@ export default function CustomCursor() {
       {/* Main Outer Ring */}
       <motion.div
         id="custom-cursor-ring"
-        className="pointer-events-none fixed top-0 left-0 z-50 rounded-full border border-cyan-400/30 mix-blend-screen"
+        className="pointer-events-none fixed top-0 left-0 z-[170] rounded-full border border-cyan-400/30 mix-blend-screen"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,

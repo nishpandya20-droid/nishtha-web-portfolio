@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { Award, Calendar, ShieldCheck, ArrowUpRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Maximize2, X } from 'lucide-react';
 import { certificates } from '../data';
 import CardTilt from './CardTilt';
 
 export default function Certifications() {
+  const [selectedCert, setSelectedCert] = useState<string | null>(null);
+
   return (
     <section id="certifications-section" className="relative py-20 sm:py-28 bg-[#09090B] overflow-hidden border-t border-white/5">
       {/* Glow Backing */}
@@ -26,82 +29,60 @@ export default function Certifications() {
           </h2>
         </div>
 
-        {/* Certifications Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Certifications Card Grid - SHOWING ONLY CERTIFICATE IMAGES */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {certificates.map((cert) => (
             <CardTilt
               key={cert.id}
-              className="group overflow-hidden flex flex-col justify-between border-white/5 bg-white/[0.01] hover:border-cyan-500/30 p-6 sm:p-8"
+              className="group overflow-hidden border-white/5 bg-white/[0.01] hover:border-cyan-500/30 p-3 sm:p-4"
             >
-              {/* Card visual contents */}
-              <div className="space-y-6 text-left">
-                {/* Embedded Aesthetic Certificate Layout */}
-                <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-zinc-950 border border-white/5 flex flex-col justify-between p-4 sm:p-5 select-none shadow-inner group-hover:border-cyan-500/20 transition-colors">
-                  {/* Watermark Logo */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] text-white">
-                    <Award size={100} />
-                  </div>
-
-                  {/* Top line metadata */}
-                  <div className="flex justify-between items-center text-[8px] font-mono font-bold text-zinc-500 tracking-wider">
-                    <span>ACADEMIC VERIFIED</span>
-                    <span>ID: {cert.id.toUpperCase()}</span>
-                  </div>
-
-                  {/* Center branding name */}
-                  <div className="text-center space-y-1 py-4">
-                    <div className="text-xs font-mono font-bold text-zinc-400 tracking-widest leading-none">
-                      {cert.organization.toUpperCase()}
-                    </div>
-                    <div className="text-sm font-sans font-black text-white leading-tight">
-                      {cert.title}
-                    </div>
-                  </div>
-
-                  {/* Bottom line credential checks */}
-                  <div className="flex justify-between items-end text-[8px] font-mono font-bold text-zinc-500">
-                    <div className="flex items-center gap-1">
-                      <ShieldCheck size={9} className="text-emerald-400" />
-                      <span>SECURE DEFI</span>
-                    </div>
-                    <span>{cert.date.toUpperCase()}</span>
+              <div
+                onClick={() => setSelectedCert(cert.image)}
+                className="block relative w-full rounded-xl overflow-hidden bg-zinc-900 border border-white/10 shadow-lg group-hover:shadow-cyan-500/10 transition-all cursor-pointer"
+              >
+                <img
+                  src={cert.image}
+                  alt="Certificate"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover block group-hover:scale-102 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <div className="rounded-full bg-black/70 backdrop-blur-md border border-white/15 p-3 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100 text-cyan-400 shadow-xl">
+                    <Maximize2 size={18} />
                   </div>
                 </div>
-
-                {/* Metadata Details */}
-                <div className="space-y-2">
-                  <h3 className="text-base sm:text-lg font-sans font-extrabold text-white group-hover:text-cyan-400 transition-colors leading-snug">
-                    {cert.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 text-xs font-mono text-zinc-500 font-bold tracking-tight">
-                    <span className="flex items-center gap-1.5">
-                      <Award size={13} className="text-violet-400" />
-                      {cert.organization}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={13} className="text-cyan-400" />
-                      {cert.date}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Verify Action Button */}
-              <div className="pt-6 border-t border-white/5 mt-6 flex justify-end">
-                <a
-                  href={cert.verifyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2 text-xs font-bold text-zinc-300 hover:text-white hover:bg-violet-600/20 hover:border-violet-500/30 transition-all duration-300"
-                >
-                  Verify Credential
-                  <ArrowUpRight size={13} className="text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </a>
               </div>
             </CardTilt>
           ))}
         </div>
       </div>
+
+      {/* High-res Certificate Lightbox Modal */}
+      <AnimatePresence>
+        {selectedCert && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedCert(null)}
+            className="fixed inset-0 z-[150] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8 cursor-pointer"
+          >
+            <div className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center">
+              <button
+                onClick={() => setSelectedCert(null)}
+                className="absolute -top-12 right-0 rounded-full bg-white/10 hover:bg-white/20 p-2 text-white transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+              <img
+                src={selectedCert}
+                alt="Certificate Full View"
+                className="max-w-full max-h-[85vh] object-contain rounded-lg border border-white/10 shadow-2xl"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -74,17 +74,32 @@ export default function Portfolio({ onSelectProject }: PortfolioProps) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((proj) => (
+            {filteredProjects.length === 0 ? (
               <motion.div
-                key={proj.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                onClick={() => onSelectProject(proj)}
-                className="cursor-pointer group"
+                key="empty"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="col-span-full py-16 text-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]"
               >
+                <div className="mx-auto w-12 h-12 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-3">
+                  <Layers size={22} />
+                </div>
+                <h4 className="text-white font-semibold text-base">No projects in this category yet</h4>
+                <p className="text-zinc-500 text-xs mt-1">Check back soon or explore other categories above.</p>
+              </motion.div>
+            ) : (
+              filteredProjects.map((proj) => (
+                <motion.div
+                  key={proj.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                  onClick={() => onSelectProject(proj)}
+                  className="cursor-pointer group"
+                >
                 <CardTilt className="h-full overflow-hidden flex flex-col justify-between border border-white/5 bg-white/[0.015] hover:border-violet-500/30">
                   {/* Image Display */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 border-b border-white/5">
@@ -140,7 +155,7 @@ export default function Portfolio({ onSelectProject }: PortfolioProps) {
                   </div>
                 </CardTilt>
               </motion.div>
-            ))}
+            )))}
           </AnimatePresence>
         </motion.div>
       </div>

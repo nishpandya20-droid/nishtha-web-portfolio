@@ -14,6 +14,7 @@ export interface Project {
   software: string[];
   client: string;
   date: string;
+  documentUrl?: string;
 }
 
 export interface Skill {
@@ -55,6 +56,7 @@ export interface Testimonial {
   comment: string;
   rating: number;
   avatar: string;
+  topWords?: string[];
 }
 
 export interface Service {

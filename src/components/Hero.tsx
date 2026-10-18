@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useSpring } from 'motion/react';
-import { Palette, Layers, Award, Sparkles, ArrowRight, Download, Mail } from 'lucide-react';
+import { Palette, Layers, Award, Sparkles, ArrowRight, Download, Mail, FileText } from 'lucide-react';
 import { AVATAR_PATH } from '../data';
 
 interface HeroProps {
@@ -113,12 +113,9 @@ export default function Hero({ onNavigate }: HeroProps) {
     };
   }, []);
 
-  // Download Resume Handler
-  const handleDownloadResume = () => {
-    const resumeBtn = document.getElementById('resume-section');
-    if (resumeBtn) {
-      resumeBtn.scrollIntoView({ behavior: 'smooth' });
-    }
+  // View Resume Handler
+  const handleViewResume = () => {
+    onNavigate('resume-section');
   };
 
   return (
@@ -227,12 +224,12 @@ export default function Hero({ onNavigate }: HeroProps) {
 
             {/* View/Download Resume button */}
             <button
-              onClick={handleDownloadResume}
+              onClick={handleViewResume}
               onMouseEnter={() => setHoveredBtn('resume')}
               onMouseLeave={() => setHoveredBtn(null)}
-              className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.06] hover:border-white/20 active:scale-98 cursor-pointer"
+              className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/[0.08] hover:border-cyan-400/40 active:scale-98 cursor-pointer shadow-md"
             >
-              <Download size={14} className="text-cyan-400 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+              <FileText size={15} className="text-cyan-400 group-hover:scale-110 transition-transform" />
               View Resume
             </button>
 
@@ -296,18 +293,16 @@ export default function Hero({ onNavigate }: HeroProps) {
             {/* Glow backing */}
             <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-violet-600 to-cyan-400 opacity-25 blur-2xl animate-pulse" />
 
-            {/* Avatar Frame Wrapper */}
-            <div className="w-full h-full rounded-full p-[3px] bg-gradient-to-tr from-violet-500 via-indigo-500 to-cyan-400 relative z-20 group">
-              <div className="w-full h-full rounded-full overflow-hidden bg-[#0A0A0F] border border-white/10 relative">
+            {/* Avatar Frame Wrapper - Face Clearly Visible */}
+            <div className="w-full h-full rounded-full p-[3px] bg-gradient-to-tr from-violet-500 via-indigo-500 to-cyan-400 relative z-20 group shadow-2xl shadow-violet-500/20">
+              <div className="w-full h-full rounded-full overflow-hidden bg-[#12121A] border border-white/20 relative shadow-inner">
                 <img
                   src={AVATAR_PATH}
-                  alt="Nishtha - Professional Headshot Portrait"
+                  alt="Nishtha Pandya - Graphic Designer"
                   referrerPolicy="no-referrer"
+                  style={{ objectPosition: 'center 15%' }}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-
-                {/* Cyber Layer Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-transparent to-transparent opacity-60" />
               </div>
             </div>
 

@@ -3,540 +3,254 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { motion } from 'motion/react';
-import { Download, FileText, Mail, MapPin, Briefcase, GraduationCap, Sparkles, Award, Github, Linkedin, ShieldCheck, Heart } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import {
+  FileText,
+  Download,
+  Maximize2,
+  ExternalLink,
+  X,
+  Sparkles,
+  Eye,
+  ZoomIn,
+  ZoomOut,
+  CheckCircle2,
+  Award
+} from 'lucide-react';
+import CardTilt from './CardTilt';
+import resumeImg from '../assets/NISHTHA PANDYA RESUME.png';
 
 export default function ResumePreview() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+
+  // Fallback public URL
+  const publicResumeUrl = '/NISHTHA_PANDYA_RESUME.png';
+
   const handleDownload = () => {
-    // Create an offscreen canvas with high resolution for crisp JPEG text
-    const canvas = document.createElement('canvas');
-    canvas.width = 1200;
-    canvas.height = 1750;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const a = document.createElement('a');
+    a.href = resumeImg || publicResumeUrl;
+    a.download = 'NISHTHA_PANDYA_RESUME.png';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
 
-    // Background - Elegant Dark Theme
-    ctx.fillStyle = '#09090D';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const handleOpenNewTab = () => {
+    window.open(publicResumeUrl, '_blank', 'noopener,noreferrer');
+  };
 
-    // Sidebar backdrop or accent lines
-    ctx.strokeStyle = 'rgba(124, 58, 237, 0.2)'; // Violet accent border
-    ctx.lineWidth = 1;
-    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-    // Glow effect
-    const gradient = ctx.createRadialGradient(600, 200, 10, 600, 200, 600);
-    gradient.addColorStop(0, 'rgba(124, 58, 237, 0.08)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-    // Define Fonts (using standard web-safe fonts for maximum reliability)
-    const titleFont = '900 48px sans-serif';
-    const sectionFont = 'bold 20px monospace';
-    const subTitleFont = 'bold 22px sans-serif';
-    const boldTextFont = 'bold 16px sans-serif';
-    const normalTextFont = '15px sans-serif';
-    const metaFont = '14px monospace';
-
-    // 1. Header Section
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = titleFont;
-    ctx.fillText('NISHTHA PANDYA', 80, 120);
-
-    ctx.fillStyle = '#818CF8'; // Light violet/indigo
-    ctx.font = 'bold 20px sans-serif';
-    ctx.fillText('COMPUTER SCIENCE STUDENT & UI/UX DESIGNER', 80, 160);
-
-    // Divider line
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(80, 190);
-    ctx.lineTo(1120, 190);
-    ctx.stroke();
-
-    // Contact info (rendered in columns)
-    ctx.fillStyle = '#A1A1AA';
-    ctx.font = metaFont;
-    ctx.fillText('Email: pnishtha29@gmail.com', 80, 225);
-    ctx.fillText('Phone: +91-8290448447', 420, 225);
-    ctx.fillText('Location: Udaipur, Rajasthan, India', 720, 225);
-    ctx.fillText('LinkedIn: linkedin.com/in/nishtha-pandya-820a7a33a', 80, 255);
-    ctx.fillText('GitHub: github.com/nishpandya20-droid', 550, 255);
-
-    // Divider
-    ctx.beginPath();
-    ctx.moveTo(80, 280);
-    ctx.lineTo(1120, 280);
-    ctx.stroke();
-
-    // Helper to draw sections
-    let currentY = 320;
-
-    const drawSectionHeader = (title: string, color: string) => {
-      ctx.fillStyle = color;
-      ctx.font = sectionFont;
-      ctx.fillText(title.toUpperCase(), 80, currentY);
-      
-      // Accent line under section header
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(80, currentY + 10);
-      ctx.lineTo(250, currentY + 10);
-      ctx.stroke();
-      
-      currentY += 45;
-    };
-
-    // 2. Education Section
-    drawSectionHeader('Education', '#06B6D4'); // Cyan
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = subTitleFont;
-    ctx.fillText('Bachelor of Technology (B.Tech), Computer Science & Engineering', 80, currentY);
-    ctx.fillStyle = '#A1A1AA';
-    ctx.font = metaFont;
-    ctx.fillText('Govt Women Engineering College Ajmer | 2023 - 2027', 80, currentY + 25);
-    ctx.fillStyle = '#34D399'; // Emerald
-    ctx.font = boldTextFont;
-    ctx.fillText('CGPA: 8.3 / 10', 850, currentY + 25);
-    currentY += 75;
-
-    // 3. Experience Section
-    drawSectionHeader('Work Experience', '#818CF8'); // Indigo
-    
-    const experiences = [
-      {
-        role: 'Python Programming Intern',
-        org: 'Ind-Velloni(OPC) Private Limited',
-        duration: 'May 2026 - June 2026',
-        desc: 'Developed and maintained Python modules for an Internship Management Portal, improving backend functionality and supporting testing, debugging, and technical documentation.'
-      },
-      {
-        role: 'Open Source Contributor',
-        org: 'Elite Coders',
-        duration: 'December 2025 - Present',
-        desc: 'Contributing to creative, branding, and content initiatives for ECWOC, Elite Her, and ECSOC.'
-      },
-      {
-        role: 'IT & Telecommunication Intern',
-        org: 'GAIL (India) Limited',
-        duration: 'July 2025 - August 2025',
-        desc: 'Gained exposure to enterprise IT infrastructure and telecommunication systems. Assisted in understanding networking and operational workflows.'
-      }
-    ];
-
-    experiences.forEach((exp) => {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = boldTextFont;
-      ctx.fillText(exp.role, 100, currentY);
-      
-      ctx.fillStyle = '#A1A1AA';
-      ctx.font = metaFont;
-      ctx.fillText(`${exp.org} (${exp.duration})`, 100, currentY + 22);
-      
-      ctx.fillStyle = '#D4D4D8';
-      ctx.font = normalTextFont;
-      // Simple text wrapping helper
-      const words = exp.desc.split(' ');
-      let line = '';
-      let lineY = currentY + 44;
-      for (let n = 0; n < words.length; n++) {
-        let testLine = line + words[n] + ' ';
-        let metrics = ctx.measureText(testLine);
-        if (metrics.width > 950 && n > 0) {
-          ctx.fillText(line, 100, lineY);
-          line = words[n] + ' ';
-          lineY += 22;
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line, 100, lineY);
-      
-      // Draw indicator dot and line
-      ctx.fillStyle = '#818CF8';
-      ctx.beginPath();
-      ctx.arc(80, currentY - 5, 4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      currentY = lineY + 40;
-    });
-
-    currentY += 10;
-
-    // 4. Projects Section
-    drawSectionHeader('Academic & Tech Projects', '#F59E0B'); // Amber
-    
-    const projects = [
-      {
-        title: 'EcoSphere – AI-Powered Sustainability Platform (In-House Hackathon Rank 1)',
-        desc: 'Designed a unified platform that helps users adopt sustainable habits by tracking waste, water, energy, and carbon emissions. Leveraged AI insights and real-time monitoring.'
-      },
-      {
-        title: 'Naivaidhya – AI Powered Food Redistribution Platform',
-        desc: 'Developed an AI-powered platform connecting donors, volunteers, and food stations to reduce food wastage. Implemented MVP food tracking and hygiene verification.'
-      },
-      {
-        title: 'To-Do List Application',
-        desc: 'Developed a Python-based To-Do List application with task management features. Integrated GitHub for version control.'
-      }
-    ];
-
-    projects.forEach((proj) => {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = boldTextFont;
-      ctx.fillText(proj.title, 100, currentY);
-      
-      ctx.fillStyle = '#D4D4D8';
-      ctx.font = normalTextFont;
-      
-      const words = proj.desc.split(' ');
-      let line = '';
-      let lineY = currentY + 22;
-      for (let n = 0; n < words.length; n++) {
-        let testLine = line + words[n] + ' ';
-        let metrics = ctx.measureText(testLine);
-        if (metrics.width > 950 && n > 0) {
-          ctx.fillText(line, 100, lineY);
-          line = words[n] + ' ';
-          lineY += 22;
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line, 100, lineY);
-
-      ctx.fillStyle = '#F59E0B';
-      ctx.beginPath();
-      ctx.arc(80, currentY - 5, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      currentY = lineY + 35;
-    });
-
-    currentY += 15;
-
-    // 5. Skills & Achievements Section (Two Columns)
-    const skillsY = currentY;
-    
-    // Left column: Skills
-    ctx.fillStyle = '#06B6D4';
-    ctx.font = sectionFont;
-    ctx.fillText('TECHNICAL SKILLS', 80, skillsY);
-    ctx.strokeStyle = '#06B6D4';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(80, skillsY + 10);
-    ctx.lineTo(250, skillsY + 10);
-    ctx.stroke();
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = boldTextFont;
-    ctx.fillText('Languages:', 100, skillsY + 45);
-    ctx.font = normalTextFont;
-    ctx.fillStyle = '#D4D4D8';
-    ctx.fillText('C, Python', 240, skillsY + 45);
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = boldTextFont;
-    ctx.fillText('Tools:', 100, skillsY + 75);
-    ctx.font = normalTextFont;
-    ctx.fillStyle = '#D4D4D8';
-    ctx.fillText('Canva, PowerPoint, Figma, VS Code, GitHub Desktop', 240, skillsY + 75);
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = boldTextFont;
-    ctx.fillText('Concepts:', 100, skillsY + 105);
-    ctx.font = normalTextFont;
-    ctx.fillStyle = '#D4D4D8';
-    ctx.fillText('DAA, UI/UX Design, SDLC Models', 240, skillsY + 105);
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = boldTextFont;
-    ctx.fillText('Soft Skills:', 100, skillsY + 135);
-    ctx.font = normalTextFont;
-    ctx.fillStyle = '#D4D4D8';
-    ctx.fillText('Graphic Designing, Creative Thinking, Communication', 240, skillsY + 135);
-
-    // Right column: Achievements & Leadership
-    ctx.fillStyle = '#EC4899'; // Pink
-    ctx.font = sectionFont;
-    ctx.fillText('ACHIEVEMENTS', 650, skillsY);
-    ctx.strokeStyle = '#EC4899';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(650, skillsY + 10);
-    ctx.lineTo(820, skillsY + 10);
-    ctx.stroke();
-
-    const achievements = [
-      'Ranked 41st among 1.54L in Myntra X Naukri Challenge',
-      'Secured 2nd Position in Elite Coder X Thore Network',
-      'Secured 4th Rank in UI/UX Design at ELITE HACK',
-      'Head of Design & Branding, CoLab Nation (Leadership)',
-      'Class Representative & GDG GWECA Member'
-    ];
-
-    let achY = skillsY + 45;
-    achievements.forEach((ach) => {
-      ctx.fillStyle = '#EC4899';
-      ctx.font = boldTextFont;
-      ctx.fillText('🏆', 650, achY);
-      ctx.fillStyle = '#D4D4D8';
-      ctx.font = normalTextFont;
-      ctx.fillText(ach, 680, achY);
-      achY += 30;
-    });
-
-    // Generate downloadable link
-    try {
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = 'Nishtha_Pandya_Resume.jpg';
-      link.click();
-    } catch (err) {
-      console.error('Failed to export resume image', err);
-    }
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+    setZoomLevel(1);
   };
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-10 backdrop-blur-md shadow-2xl">
-      {/* Glow Backdrops */}
-      <div className="absolute -top-12 -left-12 h-44 w-44 rounded-full bg-violet-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -right-12 h-44 w-44 rounded-full bg-cyan-600/10 blur-3xl pointer-events-none" />
+    <div className="w-full">
+      {/* Resume Section Container Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.6 }}
+        className="rounded-[32px] border border-white/10 bg-gradient-to-br from-white/[0.03] via-[#0E0E14] to-violet-950/10 p-6 sm:p-10 lg:p-12 shadow-2xl relative overflow-hidden text-left"
+      >
+        {/* Glow Effects */}
+        <div className="absolute top-0 right-0 h-[300px] w-[300px] bg-violet-600/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 h-[300px] w-[300px] bg-cyan-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Control Banner */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 pb-6 border-b border-white/5">
-        <div className="flex items-center gap-3 text-left">
-          <div className="rounded-xl bg-violet-500/10 p-2.5 text-violet-400 border border-violet-500/20">
-            <FileText size={22} />
-          </div>
-          <div>
-            <h3 className="text-lg font-sans font-extrabold text-white">Curriculum Vitae</h3>
-            <p className="text-xs text-zinc-400">Nishtha Pandya • B.Tech CSE Student & UI/UX Designer</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="https://www.linkedin.com/in/nishtha-pandya-820a7a33a"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 px-5 py-2.5 text-xs font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer"
-          >
-            <Sparkles size={14} className="text-cyan-400" />
-            Connect on LinkedIn
-          </a>
-          <button
-            onClick={handleDownload}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-2.5 text-xs font-semibold text-white shadow-lg shadow-indigo-500/25 hover:brightness-110 hover:scale-102 active:scale-98 transition-all cursor-pointer"
-          >
-            <Download size={14} />
-            Download Resume (JPG)
-          </button>
-        </div>
-      </div>
-
-      {/* Physical Sheet Mockup */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#09090D] border border-white/5 p-6 sm:p-10 text-left font-sans text-xs md:text-sm shadow-inner">
-        {/* Aesthetic Paper Header */}
-        <div className="flex flex-col md:flex-row justify-between gap-6 pb-6 border-b border-white/5">
-          <div className="space-y-1.5">
-            <div className="text-2xl sm:text-3xl font-black tracking-tight text-white">NISHTHA PANDYA</div>
-            <div className="text-xs font-mono font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400">
-              COMPUTER SCIENCE STUDENT & UI/UX DESIGNER
-            </div>
-            <p className="text-xs text-zinc-400 max-w-md leading-relaxed">
-              Final-year B.Tech CSE student skilled in Python, UI/UX design, and problem-solving. Experienced in developing user-focused applications.
-            </p>
-          </div>
-          <div className="space-y-2 font-mono text-[11px] text-zinc-400">
-            <div className="flex items-center gap-2">
-              <Mail size={12} className="text-violet-400" />
-              <span>pnishtha29@gmail.com</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin size={12} className="text-cyan-400" />
-              <span>Ajmer, Rajasthan, India</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Linkedin size={12} className="text-blue-400" />
-              <a href="https://www.linkedin.com/in/nishtha-pandya-820a7a33a" target="_blank" rel="noopener noreferrer" className="hover:underline">nishtha-pandya</a>
-            </div>
-            <div className="flex items-center gap-2">
-              <Github size={12} className="text-zinc-300" />
-              <a href="https://github.com/nishpandya20-droid" target="_blank" rel="noopener noreferrer" className="hover:underline">nishpandya20-droid</a>
-            </div>
-          </div>
-        </div>
-
-        {/* Paper Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-6">
-          {/* Left Column (Main details) - 8 columns */}
-          <div className="md:col-span-8 space-y-6">
-            {/* Experience */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+          {/* Left Details & Action Column - 7 Columns */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
             <div className="space-y-4">
-              <h4 className="flex items-center gap-2 text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">
-                <Briefcase size={14} className="text-violet-400" />
-                Work Experience
-              </h4>
-              <div className="space-y-4">
-                <div className="border-l-2 border-violet-500/30 pl-4 py-0.5 space-y-1">
-                  <div className="flex justify-between items-center flex-wrap gap-1">
-                    <span className="font-extrabold text-white text-sm">Python Programming Intern</span>
-                    <span className="font-mono text-[10px] text-zinc-500 bg-white/5 px-2 py-0.5 rounded">MAY 2026 - JUNE 2026</span>
-                  </div>
-                  <div className="text-xs text-cyan-400 font-medium">Ind-Velloni(OPC) Private Limited</div>
-                  <p className="text-xs text-zinc-400 leading-relaxed pt-1">
-                    Developed and maintained Python modules for an Internship Management Portal, improving backend functionality and supporting testing, debugging, and technical documentation.
-                  </p>
-                </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1 text-xs font-mono text-cyan-300">
+                <Sparkles size={12} className="text-cyan-400" />
+                VERIFIED CURRICULUM VITAE
+              </div>
 
-                <div className="border-l-2 border-white/10 pl-4 py-0.5 space-y-1">
-                  <div className="flex justify-between items-center flex-wrap gap-1">
-                    <span className="font-extrabold text-white text-sm">Open Source Contributor</span>
-                    <span className="font-mono text-[10px] text-zinc-500 bg-white/5 px-2 py-0.5 rounded">DEC 2025 - PRESENT</span>
-                  </div>
-                  <div className="text-xs text-zinc-400 font-medium font-semibold">Elite Coders</div>
-                  <p className="text-xs text-zinc-500 leading-relaxed pt-1">
-                    Contributing to creative and content initiatives for ECWOC, Elite Her, and ECSOC.
-                  </p>
-                </div>
+              <h3 className="text-2xl sm:text-4xl font-sans font-extrabold text-white tracking-tight leading-tight">
+                Nishtha Pandya — <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Resume</span>
+              </h3>
 
-                <div className="border-l-2 border-white/10 pl-4 py-0.5 space-y-1">
-                  <div className="flex justify-between items-center flex-wrap gap-1">
-                    <span className="font-extrabold text-white text-sm">IT & Telecommunication Intern</span>
-                    <span className="font-mono text-[10px] text-zinc-500 bg-white/5 px-2 py-0.5 rounded">JUL 2025 - AUG 2025</span>
-                  </div>
-                  <div className="text-xs text-zinc-400 font-medium">GAIL (India) Limited</div>
-                  <p className="text-xs text-zinc-500 leading-relaxed pt-1">
-                    Gained exposure to enterprise IT infrastructure and telecommunication systems. Assisted in understanding networking and operational workflows.
-                  </p>
+              <p className="text-sm text-zinc-400 leading-relaxed font-sans font-normal">
+                Comprehensive overview of my graphic design background, leadership roles across open-source communities, technical toolkit, academic milestones, and creative project achievements.
+              </p>
+            </div>
+
+            {/* Quick Credentials Highlights */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                <div className="p-2 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 mt-0.5">
+                  <Award size={16} />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white">Experience & Leadership</div>
+                  <div className="text-[11px] text-zinc-400 font-mono mt-0.5">Colab Nation, ECWoC, ECSOC, Elite HER</div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mt-0.5">
+                  <CheckCircle2 size={16} />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white">Core Competencies</div>
+                  <div className="text-[11px] text-zinc-400 font-mono mt-0.5">Branding, Posters, Canva, Figma, InShot</div>
                 </div>
               </div>
             </div>
 
-            {/* Projects */}
-            <div className="space-y-4">
-              <h4 className="flex items-center gap-2 text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">
-                <Sparkles size={14} className="text-amber-400" />
-                Academic & Tech Projects
-              </h4>
-              <div className="space-y-4">
-                <div className="border-l-2 border-amber-500/30 pl-4 py-0.5 space-y-1">
-                  <span className="font-extrabold text-white text-sm">Naivaidhya – AI Powered Food Redistribution Platform</span>
-                  <p className="text-xs text-zinc-400 leading-relaxed pt-1">
-                    Developed an AI-powered platform connecting donors, volunteers, and food stations to reduce food wastage. Implemented MVP features including food tracking, hygiene verification, and volunteer coordination.
-                  </p>
-                </div>
-                <div className="border-l-2 border-white/10 pl-4 py-0.5 space-y-1">
-                  <span className="font-extrabold text-white text-sm">To-Do List Application</span>
-                  <p className="text-xs text-zinc-500 leading-relaxed pt-1">
-                    Developed a Python-based To-Do List application with add, delete, and task completion functionalities. Used GitHub for project management.
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* Action Buttons */}
+            <div className="pt-4 flex flex-wrap gap-3.5 items-center">
+              {/* Button to open in page view */}
+              <button
+                onClick={toggleModal}
+                className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 hover:brightness-110 active:scale-98 transition-all cursor-pointer"
+              >
+                <Eye size={16} />
+                <span>Open Resume (Page View)</span>
+              </button>
 
-            {/* Education */}
-            <div className="space-y-3">
-              <h4 className="flex items-center gap-2 text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">
-                <GraduationCap size={14} className="text-cyan-400" />
-                Education
-              </h4>
-              <div className="border-l-2 border-cyan-500/30 pl-4 py-0.5 space-y-1">
-                <div className="flex justify-between items-center flex-wrap gap-1">
-                  <span className="font-extrabold text-white text-sm">B.Tech in Computer Science & Engineering</span>
-                  <span className="font-mono text-[10px] text-zinc-500 bg-white/5 px-2 py-0.5 rounded">2023 - 2027</span>
-                </div>
-                <div className="text-xs text-zinc-400 font-medium">Govt Women Engineering College Ajmer</div>
-                <p className="text-xs text-zinc-400 pt-0.5">
-                  CGPA: <strong className="text-white">8.3</strong> / 10
-                </p>
-              </div>
+              {/* Download PNG Button */}
+              <button
+                onClick={handleDownload}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-5 py-3.5 text-sm font-bold text-zinc-200 hover:text-white hover:border-violet-500/50 hover:bg-violet-600/20 active:scale-98 transition-all cursor-pointer shadow-md"
+              >
+                <Download size={15} />
+                <span>Download Resume</span>
+              </button>
+
+              {/* Open in New Window Link */}
+              <button
+                onClick={handleOpenNewTab}
+                className="inline-flex items-center justify-center gap-1.5 text-xs font-mono tracking-wider text-zinc-400 hover:text-cyan-400 transition-colors py-2 px-1 cursor-pointer"
+              >
+                <span>New Tab</span>
+                <ExternalLink size={13} />
+              </button>
             </div>
           </div>
 
-          {/* Right Column (Sidebar details) - 4 columns */}
-          <div className="md:col-span-4 space-y-6 md:border-l md:border-white/5 md:pl-6">
-            {/* Technical Skills */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">Skills</h4>
-              <div className="space-y-3 text-xs">
-                <div>
-                  <div className="text-[10px] font-mono text-zinc-500 uppercase">Languages</div>
-                  <div className="text-white font-medium">C, Python</div>
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono text-zinc-500 uppercase">Tools & IDEs</div>
-                  <div className="text-white font-medium">Canva, PowerPoint, Figma (Basis), VS Code, GitHub Desktop</div>
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono text-zinc-500 uppercase">Concepts</div>
-                  <div className="text-white font-medium">DAA, UI/UX Design, SDLC Models</div>
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono text-zinc-500 uppercase">Soft Skills</div>
-                  <div className="text-white font-medium">Graphic Designing, Creative Thinking, Communication</div>
-                </div>
-              </div>
-            </div>
+          {/* Right Visual Resume Card Preview - 5 Columns */}
+          <div className="lg:col-span-5">
+            <CardTilt className="rounded-2xl border border-white/10 bg-black/40 p-3 shadow-2xl group cursor-pointer overflow-hidden relative">
+              <div
+                onClick={toggleModal}
+                className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-zinc-900 border border-white/5"
+              >
+                <img
+                  src={resumeImg}
+                  alt="Nishtha Pandya Resume Preview"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = publicResumeUrl;
+                  }}
+                />
 
-            {/* Achievements */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">Achievements</h4>
-              <ul className="space-y-2 text-xs text-zinc-400">
-                <li className="flex gap-2">
-                  <span className="text-amber-400 font-bold">•</span>
-                  <span>Ranked <strong>41st</strong> among 1.54 lakh in Myntra X Naukri Campus Challenge</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-amber-400 font-bold">•</span>
-                  <span>Secured <strong>2nd Position</strong> in Elite Coder X Thore Network</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-amber-400 font-bold">•</span>
-                  <span>Secured <strong>4th Rank</strong> in UI/UX Design Competition at ELITE HACK</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Certifications */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">Certifications</h4>
-              <div className="flex flex-wrap gap-1">
-                {['Google Cloud Study Jams', 'Infosys Springboard', 'Let Us Python Toward ML - IEEE', 'Sustainovation Hackathon 2025'].map((cert, idx) => (
-                  <span
-                    key={idx}
-                    className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-zinc-400 border border-white/5"
-                  >
-                    {cert}
+                {/* Hover Overlay with Button */}
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3 backdrop-blur-xs p-4 text-center">
+                  <div className="rounded-full bg-violet-600/40 border border-violet-400 p-4 text-white shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
+                    <Maximize2 size={24} />
+                  </div>
+                  <span className="text-xs font-sans font-bold text-white tracking-wide uppercase bg-black/70 px-3.5 py-1.5 rounded-full border border-white/10">
+                    Click to Open in Page Form
                   </span>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            {/* Leadership */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold font-mono text-zinc-300 uppercase tracking-widest">Leadership</h4>
-              <div className="flex flex-wrap gap-1">
-                {['Head of Design, CoLab Nation', 'Class Representative', 'GDG GWECA Member', 'Former Member, NEC E-Cell IITB'].map((lead, idx) => (
-                  <span
-                    key={idx}
-                    className="rounded bg-violet-500/10 text-violet-300 border border-violet-500/20 px-2 py-0.5 text-[10px]"
-                  >
-                    {lead}
-                  </span>
-                ))}
+                {/* Static indicator badge */}
+                <div className="absolute bottom-3 right-3 rounded-full bg-black/70 border border-white/10 px-3 py-1 text-[10px] font-mono text-zinc-300 backdrop-blur-md flex items-center gap-1.5">
+                  <FileText size={11} className="text-cyan-400" />
+                  PNG FORMAT
+                </div>
               </div>
-            </div>
+            </CardTilt>
           </div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Full-Page Modal for Interactive Inspection */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-120 flex flex-col bg-black/95 backdrop-blur-xl p-2 sm:p-6 overflow-hidden"
+            onClick={toggleModal}
+          >
+            {/* Modal Header Bar */}
+            <div
+              className="flex items-center justify-between px-4 sm:px-6 py-3 rounded-2xl bg-[#0E0E14] border border-white/10 mb-3 max-w-5xl mx-auto w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-600 to-cyan-500 flex items-center justify-center">
+                  <FileText size={16} className="text-white" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-sans font-bold text-white leading-none">Nishtha Pandya Resume</h4>
+                  <span className="text-[10px] font-mono text-zinc-400">Full Page Document View</span>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setZoomLevel((prev) => (prev >= 2 ? 1 : prev + 0.5))}
+                  className="rounded-xl border border-white/10 bg-white/5 p-2 text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Zoom"
+                >
+                  {zoomLevel > 1 ? <ZoomOut size={16} /> : <ZoomIn size={16} />}
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-zinc-200 hover:text-white hover:bg-violet-600/30 transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download size={14} />
+                  <span className="hidden sm:inline">Download</span>
+                </button>
+                <button
+                  onClick={handleOpenNewTab}
+                  className="rounded-xl border border-white/10 bg-white/5 p-2 text-zinc-300 hover:text-cyan-400 transition-colors cursor-pointer"
+                  title="Open in new window"
+                >
+                  <ExternalLink size={16} />
+                </button>
+                <button
+                  onClick={toggleModal}
+                  className="rounded-xl border border-white/10 bg-violet-600/30 p-2 text-white hover:bg-violet-600 transition-colors cursor-pointer"
+                  title="Close"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Resume Scroll Container */}
+            <div
+              className="flex-1 overflow-auto rounded-2xl flex items-start justify-center p-2 sm:p-4"
+              onClick={toggleModal}
+            >
+              <div
+                className="max-w-4xl w-full transition-transform duration-300 ease-out origin-top shadow-[0_20px_70px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden border border-white/10 bg-white"
+                style={{ transform: `scale(${zoomLevel})` }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img
+                  src={resumeImg}
+                  alt="Nishtha Pandya Resume"
+                  className="w-full h-auto block"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = publicResumeUrl;
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-

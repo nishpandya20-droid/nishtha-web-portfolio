@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, Calendar, User, Laptop, ExternalLink } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Calendar, User, Laptop, ExternalLink, FileText } from 'lucide-react';
 import { Project } from '../types';
 
 interface ProjectModalProps {
@@ -25,6 +25,9 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const prevImage = () => {
     setActiveImageIndex((prev) => (prev - 1 + project.gallery.length) % project.gallery.length);
   };
+
+  const currentMedia = project.gallery[activeImageIndex] || project.image;
+  const isVideo = Boolean(currentMedia && /\.(mp4|webm|ogg|mov|m4v)$/i.test(currentMedia));
 
   return (
     <AnimatePresence>
@@ -58,17 +61,34 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             {/* Gallery Section - 7 Columns */}
             <div className="relative h-[280px] sm:h-[420px] lg:h-[600px] lg:col-span-7 bg-[#08080C] flex items-center justify-center overflow-hidden border-b lg:border-b-0 lg:border-r border-white/5 p-4">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeImageIndex}
-                  src={project.gallery[activeImageIndex]}
-                  alt={`${project.title} gallery item`}
-                  referrerPolicy="no-referrer"
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
-                  className="max-h-full max-w-full object-contain rounded-xl shadow-xl"
-                />
+                {isVideo ? (
+                  <motion.video
+                    key={activeImageIndex}
+                    src={currentMedia}
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
+                    className="max-h-full max-w-full rounded-xl shadow-xl object-contain"
+                  />
+                ) : (
+                  <motion.img
+                    key={activeImageIndex}
+                    src={currentMedia}
+                    alt={`${project.title} gallery item`}
+                    referrerPolicy="no-referrer"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
+                    className="max-h-full max-w-full object-contain rounded-xl shadow-xl"
+                  />
+                )}
               </AnimatePresence>
 
               {/* Slider Arrows */}
@@ -118,7 +138,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 <div className="h-[1px] w-full bg-white/5" />
 
                 <div className="space-y-4">
-                  <p className="text-sm text-zinc-400 leading-relaxed font-sans">
+                  <p className="text-sm text-zinc-400 leading-relaxed font-sans whitespace-pre-line">
                     {project.longDescription}
                   </p>
                 </div>
@@ -157,14 +177,27 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-8 pt-6 border-t border-white/5 flex gap-4">
-                <button
-                  onClick={() => alert(`Redirecting to mock source layout for ${project.title}`)}
-                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-300 hover:brightness-110 active:scale-98 cursor-pointer"
+              <div className="mt-8 pt-6 border-t border-white/5 flex flex-wrap gap-3">
+                {project.documentUrl && (
+                  <a
+                    href={project.documentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 min-w-[180px] inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs font-bold text-cyan-300 hover:text-white hover:border-cyan-400/40 hover:bg-white/[0.08] transition-all duration-300 shadow-md cursor-pointer"
+                  >
+                    <FileText size={14} className="text-cyan-400" />
+                    View Presentation PDF
+                  </a>
+                )}
+                <a
+                  href={currentMedia}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-w-[180px] inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-3 text-xs font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-300 hover:brightness-110 active:scale-98 cursor-pointer"
                 >
-                  <ExternalLink size={15} />
-                  Launch Project
-                </button>
+                  <ExternalLink size={14} />
+                  {isVideo ? 'Open Video' : 'View Full Image'}
+                </a>
               </div>
             </div>
           </div>
